@@ -1,35 +1,51 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const date = require(__dirname + "/date.js")
 
 const app = express();
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static("public"));
 app.set("view engine", "ejs")
 
-let items = ["Solve Leetcode Daily Challenge", "Upsolve previous contest", "Complete 1 module from dev course"];
+const items = ["Solve LeetCode Daily Challenge", "Upsolve previous contest", "Complete 1 module from Dev"];
+const workItems = [];
 
 app.get("/", function(req, res) {
     
-    let today = new Date();
-    let currentDay = today.getDay();
-    
-    let options = {
-        weekday: "long", 
-        day: "numeric",
-        month: "long"
-    };
+    const day = date.getDate();
 
-    let day = today.toLocaleDateString("en-US", options);
-
-    res.render("list", {kindOfDay: day, newListItems: items});
+    res.render("list", {listTitle: day, newListItems: items});
 
 });
 
+app.get("/work", function(req, res) {
+    res.render("list", {listTitle: "Work List", newListItems: workItems});
+});
+
+app.get("/about", function(req, res) {
+    res.render("about");
+});
+
+app.post("/work", function(req, res) {
+    const item = req.body.newItem;
+    workItems.push(item);
+    res.redirect("/work");
+});
+
 app.post("/", function(req, res) {
-    items.push(req.body.newItem)
-    res.redirect("/");
+    const item = req.body.newItem;
+
+    if (req.body.list === "Work") {
+        workItems.push(item);
+        res.redirect("/work");
+    }
+    else {
+        items.push(item);
+        res.redirect("/");
+    }
+
 });
 
 app.listen(3000, function() {
     console.log("Server is running at port 3000.");
-})
+});

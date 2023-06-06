@@ -6,7 +6,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static("public"));
 app.set("view engine", "ejs")
 
-let items = ["Buy food", "Cook food", "Eat food"];
+let items = ["Solve Leetcode Daily Challenge", "Upsolve previous contest", "Complete 1 module from dev course"];
 
 app.get("/", function(req, res) {
     
